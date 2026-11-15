@@ -1,0 +1,12 @@
+faiss-cpu==1.16.0
+rank-bm25==0.2.2
+numpy==1.26.4
+requests==2.31.0
+tqdm==4.66.2
+pdfplumber==0.11.4
+fastapi==0.109.0
+uvicorn==0.27.0
+pydantic==2.5.3
+pydantic-settings==2.1.0
+python-multipart==0.0.6
+jinja2==3.1.3

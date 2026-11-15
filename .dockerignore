@@ -1,0 +1,60 @@
+# Git и контроль версий
+.git
+.gitignore
+
+# Python кэш и виртуальные окружения
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv
+venv/
+env/
+.env
+
+# IDE и редакторы
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Тесты и отладка (не нужны в образе)
+test_*.py
+debug_*.py
+count_chunks.py
+load_model.json
+*_output.txt
+run.log
+solution_output.txt
+test_output.txt
+test_*.json
+
+# Данные (монтируются как volumes, не копируются в образ)
+data/
+data.kb_extracted/
+data/.rag_cache/
+*.csv
+*.zip
+
+# Материалы организаторов
+мтс/
+mindstudio_big-rag_current/
+
+# Документация (кроме README)
+*.md
+!README.md
+
+# Локальные конфиги
+.env.local
+.env.*.local
+
+# OS файлы
+.DS_Store
+Thumbs.db
+
+# Архивы
+*.tar.gz
+*.zip
+*.rar

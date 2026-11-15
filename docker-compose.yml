@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  energytool-chat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: energytool-chat
+    ports:
+      - "8000:8000"
+    environment:
+      # Обязательные переменные (передаются из .env или платформы)
+      - LLM_BASE_URL=${LLM_BASE_URL}
+      - LLM_API_KEY=${LLM_API_KEY}
+      - LLM_MODEL=${LLM_MODEL}
+      - EMB_MODEL=${EMB_MODEL}
+      
+      # Опциональные переменные с дефолтами
+      - DATA_DIR=/app/data
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL=${OPENAI_MODEL}
+      - GEN_MODEL=${GEN_MODEL}
+      - TEMPERATURE=${TEMPERATURE:-0.1}
+      - MAX_TOKENS=${MAX_TOKENS:-512}
+      - MAX_WORKERS=${MAX_WORKERS:-1}
+      - TOP_K=${TOP_K:-10}
+      - CHUNKER_CHUNK_SIZE=${CHUNKER_CHUNK_SIZE:-512}
+      - CHUNKER_OVERLAP=${CHUNKER_OVERLAP:-100}
+      - RERANKER_MODEL=${RERANKER_MODEL:-Qwen3-Reranker-8B}
+      - RERANKER_TOP_N=${RERANKER_TOP_N:-3}
+      - USE_RERANKER=${USE_RERANKER:-true}
+      - REQUEST_TIMEOUT=${REQUEST_TIMEOUT:-180}
+      - MAX_RETRIES=${MAX_RETRIES:-3}
+    volumes:
+      # Монтируем данные (questions.csv, knowledge-base.zip) из хоста
+      - ./data:/app/data:ro
+      # Кэш эмбеддингов (опционально, для ускорения повторных запусков)
+      - ./data/.rag_cache:/app/data/.rag_cache
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Отдельный сервис для запуска Stage 1 сабмита (генерация submission.csv)
+  energytool-submit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: energytool-submit
+    command: python solution.py
+    environment:
+      - LLM_BASE_URL=${LLM_BASE_URL}
+      - LLM_API_KEY=${LLM_API_KEY}
+      - LLM_MODEL=${LLM_MODEL}
+      - EMB_MODEL=${EMB_MODEL}
+      - DATA_DIR=/app/data
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL=${OPENAI_MODEL}
+      - GEN_MODEL=${GEN_MODEL}
+      - TEMPERATURE=${TEMPERATURE:-0.1}
+      - MAX_TOKENS=${MAX_TOKENS:-512}
+      - MAX_WORKERS=${MAX_WORKERS:-1}
+      - TOP_K=${TOP_K:-10}
+      - CHUNKER_CHUNK_SIZE=${CHUNKER_CHUNK_SIZE:-512}
+      - CHUNKER_OVERLAP=${CHUNKER_OVERLAP:-100}
+      - RERANKER_MODEL=${RERANKER_MODEL:-Qwen3-Reranker-8B}
+      - RERANKER_TOP_N=${RERANKER_TOP_N:-3}
+      - USE_RERANKER=${USE_RERANKER:-true}
+      - REQUEST_TIMEOUT=${REQUEST_TIMEOUT:-180}
+      - MAX_RETRIES=${MAX_RETRIES:-3}
+    volumes:
+      - ./data:/app/data:ro
+      - ./data/.rag_cache:/app/data/.rag_cache
+      # Для сохранения submission.csv
+      - ./output:/app/output
+    working_dir: /app
+    depends_on:
+      - energytool-chat
+    profiles:
+      - submit
+
+volumes:
+  rag_cache:
