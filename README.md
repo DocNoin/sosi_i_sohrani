@@ -4,7 +4,7 @@
 
 ---
 
-## 🏗 Архитектура решения
+# Архитектура решения
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -85,7 +85,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000
 # Откройте http://localhost:8000
 ```
 
-### 2. Запуск через Docker (рекомендуется для продакшена)
+## 2. Запуск через Docker
 
 ```bash
 # Подготовка .env файла (скопируйте из .env.example)
@@ -98,7 +98,7 @@ docker compose up --build energytool-chat
 # Откройте http://localhost:8000
 ```
 
-### 3. Stage 1 сабмит (генерация submission.csv)
+## 3. Stage 1 сабмит (генерация submission.csv)
 
 ```bash
 # Через Docker (профиль submit)
@@ -155,56 +155,6 @@ python solution.py
 - 🔍 Найденные фрагменты (до 5) с scores и источниками
 - 📊 После реранкинга (top-N)
 - 📥📤 Токены prompt/completion
-
----
-
-## 📦 Формат сдачи
-
-### Stage 1 — Автопроверка (сабмиты во время хакатона)
-**ZIP-архив** со следующей структурой (в корне архива, без внешней папки):
-```
-solution.py
-requirements.txt
-rag/
-  __init__.py
-  knowledge.py
-  retrieval.py
-  rerank.py
-  generation.py
-utils/
-  __init__.py
-  env.py
-  csv_io.py
-```
-> `data/`, `app/`, `templates/`, `Dockerfile`, `docker-compose.yml`, `.dockerignore`, `README.md`, `.env.example` — **не включаются** в Stage 1 сабмит (нужны только для Stage 2 / финала).
-
-Платформа запускает `python solution.py` в Docker, подаёт тестовые вопросы (одиночные или короткие диалоги), ожидает `submission.csv` с колонками `id,answer`.
-
-### Stage 2 — Финальная сдача
-Два варианта (один на выбор):
-
-1. **PDF-презентация** со ссылкой на репозиторий (на 1-м слайде)
-2. **ZIP-архив** с полным проектом:
-   ```
-   Исходный код решения
-   README.md              # архитектура, 1 команда запуска через Docker, env, порты, зависимости
-   Dockerfile
-   compose.yaml
-   .dockerignore
-   requirements.txt       # зафиксированные версии
-   .env.example           # без секретов
-  Презентация в PDF
-   ```
-
----
-
-## 🔧 Известные ограничения
-
-1. **Реранкер** требует endpoint `/rerank` — на LM Studio его может не быть, используйте `USE_RERANKER=false` локально
-2. **FAISS** может не работать на Python 3.14 — есть numpy-fallback (автоматически)
-3. **Кэш эмбеддингов** хранится в `DATA_DIR/.rag_cache/` — ускоряет повторные запуски
-4. **Локально** качество ответов зависит от модели (qwen3-8b слабее платформенной Qwen3.8-27B)
-4. **Ответы ≤ 150 слов** — по требованию кейса (реализовано через промпт и `MAX_TOKENS`)
 
 ---
 
