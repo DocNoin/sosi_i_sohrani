@@ -12,12 +12,12 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
-from rag.env import load_config
-from utils.csv_io import read_questions, write_submission, parse_conversation
-from rag.knowledge import load_knowledge_base
-from rag.retrieval import HybridRetriever
-from rag.rerank import Reranker, RerankResult
-from rag.generation import Generator
+from env import load_config
+from csv_io import read_questions, write_submission, parse_conversation
+from knowledge import load_knowledge_base
+from retrieval import HybridRetriever
+from rerank import Reranker, RerankResult
+from generation import Generator
 
 DEFAULT_FALLBACK = "В предоставленных материалах этого нет / для ответа нужен специалист."
 
