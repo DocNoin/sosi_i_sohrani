@@ -23,6 +23,7 @@ WORKDIR /app
 # Установка рантайм зависимостей
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
+    curl \
     poppler-utils \
     tesseract-ocr \
     tesseract-ocr-rus \

@@ -367,7 +367,7 @@
                 const created = new Date(session.created_at).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
                 
                 item.innerHTML = `
-                    <div class="sidebar-item-title">${escapeHtml(session.session_id)}</div>
+                    <div class="sidebar-item-title">${escapeHtml(session.first_message || "Новый диалог")}</div>
                     <div class="sidebar-item-meta">
                         <span>${created}</span>
                         <span>${session.message_count} сообщ.</span>

@@ -56,6 +56,7 @@ class SessionInfo(BaseModel):
     has_lead: bool
     lead_info: Optional[LeadInfo] = None
     lead_summary: Optional[str] = None
+    first_message: Optional[str] = None
 
 
 class DebugInfo(BaseModel):

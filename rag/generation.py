@@ -3,9 +3,9 @@ import time
 from typing import List, Tuple
 from dataclasses import dataclass
 
-from utils.env import Config
-from .knowledge import DocumentChunk
-from .rerank import RerankResult
+from rag.env import Config
+from rag.knowledge import DocumentChunk
+from rag.rerank import RerankResult
 
 
 @dataclass

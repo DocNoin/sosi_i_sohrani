@@ -1,4 +1,4 @@
-version: '3.8'
+﻿version: '3.8'
 
 services:
   energytool-chat:
@@ -29,14 +29,12 @@ services:
       - CHUNKER_OVERLAP=${CHUNKER_OVERLAP:-100}
       - RERANKER_MODEL=${RERANKER_MODEL:-Qwen3-Reranker-8B}
       - RERANKER_TOP_N=${RERANKER_TOP_N:-3}
-      - USE_RERANKER=${USE_RERANKER:-true}
+      - USE_RERANKER=${USE_RERANKER:-false}
       - REQUEST_TIMEOUT=${REQUEST_TIMEOUT:-180}
       - MAX_RETRIES=${MAX_RETRIES:-3}
     volumes:
       # Монтируем данные (questions.csv, knowledge-base.zip) из хоста
-      - ./data:/app/data:ro
-      # Кэш эмбеддингов (опционально, для ускорения повторных запусков)
-      - ./data/.rag_cache:/app/data/.rag_cache
+      - ./data:/app/data
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
@@ -70,19 +68,17 @@ services:
       - CHUNKER_OVERLAP=${CHUNKER_OVERLAP:-100}
       - RERANKER_MODEL=${RERANKER_MODEL:-Qwen3-Reranker-8B}
       - RERANKER_TOP_N=${RERANKER_TOP_N:-3}
-      - USE_RERANKER=${USE_RERANKER:-true}
+      - USE_RERANKER=${USE_RERANKER:-false}
       - REQUEST_TIMEOUT=${REQUEST_TIMEOUT:-180}
       - MAX_RETRIES=${MAX_RETRIES:-3}
     volumes:
-      - ./data:/app/data:ro
-      - ./data/.rag_cache:/app/data/.rag_cache
+      - ./data:/app/data
       # Для сохранения submission.csv
       - ./output:/app/output
     working_dir: /app
-    depends_on:
-      - energytool-chat
     profiles:
       - submit
 
 volumes:
   rag_cache:
+

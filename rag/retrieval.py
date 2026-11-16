@@ -1,3 +1,4 @@
+import hashlib
 import requests
 import numpy as np
 from typing import List, Tuple, Dict, Any
@@ -22,8 +23,8 @@ FAISS_AVAILABLE = faiss is not None
 
 from rank_bm25 import BM25Okapi
 
-from utils.env import Config
-from .knowledge import DocumentChunk
+from rag.env import Config
+from rag.knowledge import DocumentChunk
 
 
 @dataclass
@@ -116,7 +117,7 @@ class VectorIndex:
 
         cache_dir = self.config.data_dir / ".rag_cache"
         cache_key = f"{self.config.emb_model}|{len(texts)}|{len(texts[0]) if texts else 0}|{len(texts[-1]) if texts else 0}"
-        cache_name = f"emb_{abs(hash(cache_key))}.npz"
+        cache_name = f"emb_{hashlib.md5(cache_key.encode('utf-8')).hexdigest()}.npz"
         cache_path = cache_dir / cache_name
 
         embeddings = None

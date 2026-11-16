@@ -59,13 +59,29 @@ def chunk_text(text: str, chunk_size: int, overlap: int) -> List[str]:
     return chunks
 
 
+def _writable_extract_dir() -> Path:
+    """Каталог для распаковки базы знаний. DATA_DIR может быть read-only,
+    поэтому пробуем рабочий каталог, затем /tmp."""
+    import tempfile
+    for base in (Path.cwd(), Path(tempfile.gettempdir())):
+        try:
+            d = base / "kb_extracted"
+            d.mkdir(parents=True, exist_ok=True)
+            probe = d / ".write_test"
+            probe.write_text("ok")
+            probe.unlink()
+            return d
+        except OSError:
+            continue
+    raise PermissionError("Нет доступного для записи каталога для распаковки базы знаний")
+
+
 def load_knowledge_base(data_dir: Path, chunk_size: int = 512, overlap: int = 100) -> List[DocumentChunk]:
     kb_zip = data_dir / "knowledge-base.zip"
     if not kb_zip.exists():
         raise FileNotFoundError(f"knowledge-base.zip не найден в {data_dir}")
     
-    extract_dir = data_dir / "kb_extracted"
-    extract_dir.mkdir(exist_ok=True)
+    extract_dir = _writable_extract_dir()
     
     with zipfile.ZipFile(kb_zip, "r") as zf:
         zf.extractall(extract_dir)

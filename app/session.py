@@ -35,6 +35,11 @@ class Session:
         self.last_topic = None
     
     def to_info(self) -> SessionInfo:
+        first_user_msg = None
+        for msg in self.history:
+            if msg.role == MessageRole.USER:
+                first_user_msg = msg.content[:80] + ("..." if len(msg.content) > 80 else "")
+                break
         return SessionInfo(
             session_id=self.session_id,
             created_at=self.created_at,
@@ -42,6 +47,7 @@ class Session:
             has_lead=self.lead_submitted,
             lead_info=self.lead_info,
             lead_summary=self.lead_summary,
+            first_message=first_user_msg,
         )
 
 

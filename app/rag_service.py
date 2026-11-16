@@ -4,7 +4,8 @@ import requests
 from typing import List, Tuple, Optional, Dict, Any
 from dataclasses import dataclass
 
-from utils import load_config, parse_conversation
+from rag.env import load_config
+from utils.csv_io import parse_conversation
 from rag.knowledge import load_knowledge_base
 from rag.retrieval import HybridRetriever
 from rag.rerank import Reranker

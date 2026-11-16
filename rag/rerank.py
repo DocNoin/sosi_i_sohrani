@@ -3,9 +3,9 @@ import time
 from typing import List
 from dataclasses import dataclass
 
-from utils.env import Config
-from .retrieval import RetrievalResult
-from .knowledge import DocumentChunk
+from rag.env import Config
+from rag.retrieval import RetrievalResult
+from rag.knowledge import DocumentChunk
 
 
 @dataclass
